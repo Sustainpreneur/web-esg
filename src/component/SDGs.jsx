@@ -15,7 +15,7 @@ export const SDGs = (item) => {
         {picItem.item && picItem.item.map((dataObj, index) => {
         return (
           <div key={index} className=''>
-            <img className='w-[60px] md:w-[50px]' src={`../public/img/SDGs/${dataObj.file}`} alt="" />
+            <img className='w-[60px] md:w-[50px]' src={`.../../public/img/SDGs/${dataObj.file}`} alt="" />
           </div>
         )
       })}

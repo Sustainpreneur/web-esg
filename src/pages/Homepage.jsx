@@ -27,7 +27,7 @@ const Homepage = () => {
                 <p>1. Visit the solutions page. This page provides a brief overview of each company, showing its financial and ESG score data.</p>
               </div>
               <div className='md:w-1/2 order-2'>
-                <img className='md:w-[80%]' src="./public/img/home page.png" alt="" />
+                <img className='md:w-[80%]' src="../../public/img/home page.png" alt="" />
               </div>
             </div>
             <div className='py-4'>
@@ -35,7 +35,7 @@ const Homepage = () => {
             </div>
             <div className='md:pt-6 flex flex-col md:flex-row items-center'>
               <div className='md:w-1/2 order-2'>
-                <img className='md:w-[80%]' src="./public/img/Solutions page.png" alt="" />
+                <img className='md:w-[80%]' src="../../public/img/Solutions page.png" alt="" />
               </div>
               <div className='md:w-1/2 order-1'>
                 <p>2. Select the company you are interested in. by clicking on the company abbreviation to view the company's detailed information.</p>
@@ -49,7 +49,7 @@ const Homepage = () => {
                 <p>3. ESG Profile Page This page provides detailed information about a company's ESG. It is divided into 2 main parts, namely, the company's preliminary information consists of Company abbreviation Company full name, current stock price, stock price percentage today compared to yesterday, and stock graphs. As for the annual report data, analyze and compare the results between AI and human beings to see if the results are the same or not.</p>
               </div>
               <div className='md:w-1/2 order-2'>
-                <img className='md:w-[80%]' src="./public/img/ESG Profile page.png" alt="" />
+                <img className='md:w-[80%]' src="../../public/img/ESG Profile page.png" alt="" />
               </div>
             </div>
           </div>
