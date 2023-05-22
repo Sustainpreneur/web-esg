@@ -20,7 +20,7 @@ export default function ESGProfile() {
 
   const getCompanyDataById = async () => {
     try {
-      const response = await axios.get(`http://54.169.193.60:4000/esg/companyById?id=${id}`)
+      const response = await axios.get(`http://13.229.61.239:8080/esg/companyById?id=${id}`)
       setItem(response.data);
       await getPrice(response.data.symbol);
       await getOptionStock(response.data.symbol);
@@ -33,7 +33,7 @@ export default function ESGProfile() {
 
   const getEsgScoreById = async () => {
     try {
-      const response = await axios.get(`http://54.169.193.60:4000/esg-score/sdgByid/${item.symbol}`)
+      const response = await axios.get(`http://13.229.61.239:8080/esg-score/sdgByid/${item.symbol}`)
       // console.log(response.data[0].sdg_pic)
       setEsgScore(response.data);
     }
@@ -44,7 +44,7 @@ export default function ESGProfile() {
 
   const getPrice = async (symbol) => {
     try {
-      const response = await axios.get(`http://54.169.193.60:4000/financial/stockToday/${symbol}.bk`);
+      const response = await axios.get(`http://13.229.61.239:8080/financial/stockToday/${symbol}.bk`);
       setPriceToday(response.data[response.data.length - 1].adjClose);
       setDiffPrice((response.data[response.data.length - 1].adjClose - response.data[response.data.length - 2].adjClose).toFixed(2));
       setPercentage((((response.data[response.data.length - 1].adjClose - response.data[response.data.length - 2].adjClose) / response.data[response.data.length - 2].adjClose) * 100).toFixed(2));
@@ -56,7 +56,7 @@ export default function ESGProfile() {
 
   const getPrice120DaysAgo = async (symbol) => {
     try {
-        const response = await axios.get(`http://54.169.193.60:4000/financial/stock120DaysAgo/${symbol}.bk`);
+        const response = await axios.get(`http://13.229.61.239:8080/financial/stock120DaysAgo/${symbol}.bk`);
         setItem120Days(response.data);
     }
     catch (error) {
@@ -66,7 +66,7 @@ export default function ESGProfile() {
 
   const getOptionStock = async (symbol) => {
     try {
-      const response = await axios.get(`http://54.169.193.60:4000/financial/getOptionStock/${symbol}.bk`);
+      const response = await axios.get(`http://13.229.61.239:8080/financial/getOptionStock/${symbol}.bk`);
       console.log(response.data);
       setItemOptionStock(response.data);
     }

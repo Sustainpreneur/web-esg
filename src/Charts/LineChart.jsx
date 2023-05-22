@@ -40,7 +40,7 @@ const LineChart = (symbol) => {
 
   const getFinance = async () => {
     try {
-        const response = await axios.get(`http://54.169.193.60:4000/financial/stock120DaysAgo/${symbol.symbol}.bk`);
+        const response = await axios.get(`http://13.229.61.239:8080/financial/stock120DaysAgo/${symbol.symbol}.bk`);
         console.log(response.data);
         setStockData(response.data);
         setIsLoading(false);
