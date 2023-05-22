@@ -9,7 +9,7 @@ const Price = (symbol) => {
 
   const getPrice = async () => {
     try {
-      const response = await axios.get(`http://13.229.61.239:8080/financial/stockToday/${symbol.symbol}.bk`)
+      const response = await axios.get(`http://13.213.120.182:8080/financial/stockToday/${symbol.symbol}.bk`)
       setPriceToday(response.data[response.data.length - 1]);
       setDiffPrice((response.data[response.data.length - 1].adjClose - response.data[response.data.length - 2].adjClose).toFixed(2));
       setPercentage((((response.data[response.data.length - 1].adjClose - response.data[response.data.length - 2].adjClose)/response.data[response.data.length - 2].adjClose)*100).toFixed(2));
