@@ -2,6 +2,7 @@ import Homepage from "../pages/Homepage";
 import Insight from "../pages/Insight";
 import Solutions from "../pages/Solutions";
 import ESGProfile from "../pages/ESGProfile";
+import AboutUs from "../pages/AboutUs";
 
 export const MASTER_ROUTER_MODEL = [
   {
@@ -46,6 +47,17 @@ export const MASTER_ROUTER_MODEL = [
     items: [],
     is_active: true,
     is_show:false,
+    is_banner:true
+  },
+  {
+    id: "5",
+    name: "AboutUs",
+    title:"ABOUT US",
+    router_path: "/About-Us",
+    router_component: <AboutUs />,
+    items: [],
+    is_active: true,
+    is_show:true,
     is_banner:true
   }
 ];

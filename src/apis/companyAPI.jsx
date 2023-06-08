@@ -5,7 +5,7 @@ class companyAPI extends Component {
 
   static getAllCompany = async () => {
     try {
-      const response = await axios.get("http://13.213.120.182:8080/esg/allcompany")
+      const response = await axios.get("/esg/allcompany")
       return response.data;
     } catch (error) {
       console.log(error);
@@ -15,7 +15,7 @@ class companyAPI extends Component {
 
   static getEnergyCompany = async () => {
     try {
-      const response = await axios.get("http://13.213.120.182:8080/esg/energycompany")
+      const response = await axios.get("/esg/energycompany")
       return response.data;
     } catch (error) {
       console.log(error);
@@ -25,7 +25,7 @@ class companyAPI extends Component {
 
   static getBankingCompany = async () => {
     try {
-      const response = await axios.get("http://13.213.120.182:8080/esg/bankingcompany")
+      const response = await axios.get("/esg/bankingcompany")
       return response.data;
     } catch (error) {
       console.log(error);
@@ -35,7 +35,7 @@ class companyAPI extends Component {
 
   static getSearch = async () => {
     try {
-      const response = await axios.get("http://13.213.120.182:8080/project/search")
+      const response = await axios.get("/project/search")
       // const response = await axios({
       //   url: "http://13.213.120.182:8080/project/search",
       //   method: "GET",
