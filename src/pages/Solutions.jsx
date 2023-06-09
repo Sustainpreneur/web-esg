@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 export default function Solutions() {
   const [energyCompany, setEnergyCompany] = useState([]);
   const [bankingCompany, setBankingCompany] = useState([]);
+  const [activeFilter, setActiveFilter] = useState(null);
+
   const navigate = useNavigate();
 
   const getEnergyCompany = async () => {
@@ -43,12 +45,21 @@ export default function Solutions() {
   return (
     <div><Navbar_made />
       <div className='container mx-auto px-1 md:px-0'>
-        <div className='pt-2 pb-5 text-[40px] leading-10 md:text-5xl font-semibold md:space-y-2'>
-          <div>ALL SOLUTION</div>
-          <div>FROM ANALYSIS</div>
-          <div>IN DATABASE</div>
+        <div className='py-2 text-[40px] leading-10 md:text-5xl font-semibold md:space-y-2'>
+          <div>ESG PROFILE</div>
         </div>
-        <div className='text-xl font-bold py-4'>Energy & Utility</div>
+        <div className='py-5'>
+          {/* <div className='text-lg font-semibold'>Filter</div> */}
+          <div className='py-3 grid grid-cols-4 md:flex space-x-1 space-y-1 md:space-x-4 md:space-y-0'>
+            <button className={`text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border border-red-700 drop-shadow-sm ${activeFilter === null ? 'bg-red-700 text-white' : 'bg-white' }`} onClick={() => setActiveFilter(null)}>All Company</button>
+            <button className={`text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border border-[#0d6efd] drop-shadow-sm ${activeFilter === ' Transportation & Logistics' ? 'bg-[#0d6efd] text-white' : 'bg-white' }`} onClick={() => setActiveFilter(' Transportation & Logistics')}>Transportation & Logistics</button>
+            <button className={`text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border border-[#198754] drop-shadow-sm ${activeFilter === 'Food and Beverage' ? 'bg-[#198754] text-white' : 'bg-white' }`} onClick={() => setActiveFilter('Food and Beverage')}>Food and Beverage</button>
+            <button className={`text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border border-[#0dcaf0] drop-shadow-sm ${activeFilter === 'Commerce' ? 'bg-[#0dcaf0] text-white' : 'bg-white' }`} onClick={() => setActiveFilter('Commerce')}>Commerce</button>
+            <button className={`text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border border-[#ffc107] drop-shadow-sm ${activeFilter === 'Banking' ? 'bg-[#ffc107] text-white' : 'bg-white' }`} onClick={() => setActiveFilter('Banking')}>Banking</button>
+            <button className={`text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border border-[#e47831] drop-shadow-sm ${activeFilter === 'Information & Communication Technology' ? 'bg-[#e47831] text-white' : 'bg-white' }`} onClick={() => setActiveFilter('Information & Communication Technology')}>Information & Communication Technology</button>
+            <button className={`text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border border-[#000000] drop-shadow-sm ${activeFilter === 'Energy & Utilities' ? 'bg-[#000000] text-white' : 'bg-white' }`} onClick={() => setActiveFilter('Energy & Utilities')}>Energy & Utilities</button>
+          </div>
+        </div>
         <div className='md:grid md:grid-cols-3 md:gap-x-10 md:gap-y-6'>
           {energyCompany && energyCompany.map((dataObj, index) => {
             return (
@@ -64,12 +75,6 @@ export default function Solutions() {
                       <div className='text-[#A0A0A0]'>{dataObj.company_name_th}</div>
                       <Price symbol={dataObj.symbol} />
                     </div>
-                    {/* <div className='w-full flex justify-end'>
-                      <div className='px-5 py-2 border border-transparent rounded-full text-center'>
-                        <div className='font-semibold text-[#03B50A]'>57.7</div>
-                        <div className='font-semibold text-xs'>ESG</div>
-                      </div>
-                    </div> */}
                   </div>
                   <div className='pt-4 w-full'>
                     <LineChart symbol={dataObj.symbol} />
@@ -79,39 +84,6 @@ export default function Solutions() {
             )
           })}
         </div>
-
-        <div className='text-xl font-bold py-4'>Banking</div>
-        <div className='md:grid md:grid-cols-3 md:gap-x-10 md:gap-y-6'>
-          {bankingCompany && bankingCompany.map((dataObj, index) => {
-            return (
-              <div key={index} className='flex py-1 md:py-0'>
-                <div className='border rounded-lg w-full p-4 hover:bg-[#fafafa]'>
-                  <div className='flex flex-row'>
-                    <div>
-                      <div className='text-lg font-bold'>
-                        <button type='button' onClick={() => {
-                          navigateToDetail(dataObj.id);
-                        }}>{dataObj.symbol}</button>
-                      </div>
-                      <div className='text-[#A0A0A0]'>{dataObj.company_name_th}</div>
-                      <Price symbol={dataObj.symbol} />
-                    </div>
-                    {/* <div className='w-full flex justify-end'>
-                      <div className='px-5 py-2 border border-transparent rounded-full text-center'>
-                        <div className='font-semibold text-[#03B50A]'>57.7</div>
-                        <div className='font-semibold text-xs'>ESG</div>
-                      </div>
-                    </div> */}
-                  </div>
-                  <div className='pt-4 w-full'>
-                    <LineChart symbol={dataObj.symbol} />
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-
       </div>
     </div>
   )

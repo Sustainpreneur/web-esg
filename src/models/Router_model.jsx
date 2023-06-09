@@ -34,8 +34,8 @@ export const MASTER_ROUTER_MODEL = [
     router_path: "/Insight",
     router_component: <Insight />,
     items: [],
-    is_active: true,
-    is_show:true,
+    is_active: false,
+    is_show:false,
     is_banner:true
   },
   {
