@@ -18,9 +18,9 @@ export const MASTER_ROUTER_MODEL = [
   },
   {
     id: "2",
-    name: "SOLUTIONS",
-    title:"Solutions",
-    router_path: "/Solutions",
+    name: "INSIGHT",
+    title:"Insight",
+    router_path: "/Insight",
     router_component: <Solutions />,
     items: [],
     is_active: true,

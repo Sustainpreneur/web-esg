@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Navbar_made from '../component/Navbar';
+import Footer from '../component/Footer';
 import LineChartOne from '../Charts/LineChartOne';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -138,7 +139,88 @@ export default function ESGProfile() {
         </div>
       </div>;
     } else if (activeMenu === 'CSR') {
-      return <div>CSR details</div>;
+      return <div>
+        <div className='text-sm md:text-base pt-6 pb-4 font-bold'>Corporate Social Responsibility (CSR)</div>
+        <div>
+          <hr />
+        </div>
+        <div className='relative pb-10'>
+          <div className='italic font-semibold'>Activity</div>
+          <div className='mt-2 font-bold text-xl'>Human Capital, Community, and Social Development (People): Through the Promotion of Education</div>
+          <div className='my-2'>
+            <div className='font-bold'>Key Target Issues</div>
+            <div className='pl-8'>
+              <ul className='list-disc font-light'>
+                <li>Support educational subjects such as science and technology education development to establish a foundation for national development in the future.</li>
+                <li>Build teacher capacity in science and technology education.</li>
+              </ul>
+            </div>
+          </div>
+          <div className='my-2'>
+            <div className='font-bold'>Support</div>
+            <div className='pl-8'>
+              <ul className='list-disc font-light'>
+                <li>Funding</li>
+                <li>Employee time dedication for activities</li>
+                <li>In-kind giving, including resources and services</li>
+                <li>Administrative overhead costs for social impact projects</li>
+              </ul>
+            </div>
+          </div>
+          <div className='my-2'>
+            <div className='font-bold'>Impact</div>
+            <div className='pl-8'>
+              <ol className='list-decimal font-light'>
+                <li>
+                  <div>Benefits to Society : Social Value</div>
+                  <ul className='list-disc pl-8'>
+                    <li>Contributed to the development of science and technology experts in the country</li>
+                    <li>Advanced research and innovation that support national development</li>
+                    <li>Built and strengthened sports skills for youth beneficiaries</li>
+                  </ul>
+                </li>
+                <li>
+                  <div>Benefits to Society : Environmental Value</div>
+                  <ul className='list-disc pl-8'>
+                    <li>Increased research that supports environmentally-friendly development</li>
+                  </ul>
+                </li>
+                <li>
+                  <div>Benefits to Employees</div>
+                  <ul className='list-disc pl-8'>
+                    <li>Created a network for research and innovation development</li>
+                  </ul>
+                </li>
+                <li>
+                  <div>Benefits to Business</div>
+                  <ul className='list-disc pl-8'>
+                    <li>Intersections to research and innovation development for PTT Group business to increase process efficiency and advancement of new business development</li>
+                    <li>Created a network of schools located around operational areas</li>
+                  </ul>
+                </li>
+              </ol>
+            </div>
+          </div>
+          <div>
+            <div className='font-bold'>Project / Activity</div>
+            <div className='pl-8'>
+              <ul className='list-disc font-light'>
+                <li>Funding support for long-term development of science and technology education through the Kamnoetvidya Science Academy School (KVIS) and the Vidyasirimedhi Institute of Science and Technology (VISTEC)</li>
+                <li>Development of PTT Group Model School STEEM+4E</li>
+                <li>Funding support for physical sports skill development</li>
+              </ul>
+            </div>
+          </div>
+          <div className='absolute top-0 right-0'>
+            <div className='font-semibold'>Sustainable Development Goals</div>
+            <div className='mt-2 flex justify-end'>
+              <img className='w-[50px]' src="/img/SDGs/sdg-en-04.png" alt="" />
+            </div>
+
+          </div>
+        </div>
+
+      </div>;
     } else if (activeMenu === 'ESG') {
       return <div>
         <div className='text-sm md:text-base pt-6 pb-4 md:pb-4 font-bold'>ESG INFORMATION</div>
@@ -290,7 +372,25 @@ export default function ESGProfile() {
         {/* End Governance Score Detail */}
       </div>;
     } else if (activeMenu === 'News') {
-      return <div>News details</div>;
+      return <div>
+        <div className='text-sm md:text-base pt-6 pb-4 font-bold'>News</div>
+        <div className='flex my-2 pb-20'>
+          <div className='relative px-5'>
+            <div className='text-lg font-bold'>“Krungthai” and “PTT” engaged in Thailand’s first carbon credit
+              linked derivatives, a new innovation in Thai capital market to
+              address net-zero emissions goal
+            </div>
+            <div className='mt-2 font-light'>Yesterday, 4 April 2023, Krungthai Bank PCL signed the carbon credit linked derivatives framework agreement with PTT PLC (PTT) and PTT International Trading Pte Ltd (PTTT, 100% owned by PTT and based in Singapore). </div>
+            <div className='absolute bottom-0 flex space-x-1'>
+              <div className='font-semibold'>PTT Web site |</div>
+              <div className='font-light'>07.02.2023</div>
+            </div>
+          </div>
+          <div className='w-[30%]'>
+            <img src="/img/news_1.png" alt="" />
+          </div>
+        </div>
+      </div>;
     }
   };
 
@@ -377,8 +477,8 @@ export default function ESGProfile() {
 
           <div className='flex border-b'>
             <button className={`px-3 py-2 rounded-t-lg border border-red-600 w-[100px] font-bold text-center ${activeMenu === null ? 'bg-red-600 text-white' : 'text-red-600'}`} onClick={() => setActiveMenu(null)}>Financial</button>
-            <button className={`px-3 py-2 rounded-t-lg border border-yellow-600 w-[100px] font-bold text-center ${activeMenu === 'CSR' ? 'bg-yellow-600 text-white' : 'text-yellow-600'}`} onClick={() => setActiveMenu('CSR')}>CSR</button>
             <button className={`px-3 py-2 rounded-t-lg border border-green-600 w-[100px] font-bold text-center ${activeMenu === 'ESG' ? 'bg-green-600 text-white' : 'text-green-600'}`} onClick={() => setActiveMenu('ESG')}>ESG</button>
+            <button className={`px-3 py-2 rounded-t-lg border border-yellow-600 w-[100px] font-bold text-center ${activeMenu === 'CSR' ? 'bg-yellow-600 text-white' : 'text-yellow-600'}`} onClick={() => setActiveMenu('CSR')}>CSR</button>
             <button className={`px-3 py-2 rounded-t-lg border border-sky-600 w-[100px] font-bold text-center ${activeMenu === 'News' ? 'bg-sky-600 text-white' : 'text-sky-600'}`} onClick={() => setActiveMenu('News')}>News</button>
           </div>
           <div>{renderDetails()}</div>
@@ -387,7 +487,7 @@ export default function ESGProfile() {
         <p>Loading...</p>
       )}
 
-
+        <Footer />
     </div>
   )
 }
