@@ -20,7 +20,7 @@ const PriceForTable = (symbol) => {
 
   useEffect(() => {
     getPrice();
-  }, [])
+  }, [symbol])
 
   return (
     <>
