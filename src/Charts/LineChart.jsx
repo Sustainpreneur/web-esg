@@ -33,16 +33,13 @@ const options = {
 };
 
 
-const LineChart = (symbol) => {
+const LineChart = (stock_array) => {
   const [stockData, setStockData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  console.log(symbol);
 
-  const getFinance = async () => {
+  const getFinance = async (stock_array) => {
     try {
-        const response = await axios.get(`http://13.213.120.182:8080/financial/stock120DaysAgo/${symbol.symbol}.bk`);
-        console.log(response.data);
-        setStockData(response.data);
+        setStockData(stock_array.data);
         setIsLoading(false);
     }
     catch (error) {
@@ -71,11 +68,8 @@ const LineChart = (symbol) => {
   };
 
   useEffect(() => {
-    if (symbol) {
-      getFinance();
-    }
-  }, [symbol])
-
+    getFinance(stock_array);
+  }, [stock_array])
 
   return (
     <div>

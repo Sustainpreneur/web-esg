@@ -11,7 +11,7 @@ export default function Search() {
   const [activeFilter, setActiveFilter] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const itemsPerPage = 10;
+  const itemsPerPage = 40;
 
   const navigate = useNavigate();
 
@@ -25,7 +25,8 @@ export default function Search() {
 
   const getAllCompany = async () => {
     try {
-      const response = await companyAPI.mockAllCompany();
+      const response = await companyAPI.getAllCompany();
+      console.log(response);
       setCompany(response);
       setTotalPages(Math.ceil(response.length / itemsPerPage));
     }
@@ -60,14 +61,8 @@ export default function Search() {
     setCurrentPage(1);
   }
 
-  const handleSearch = () => {
-    const filtered = company.filter(item => item.industry_group.toLowerCase().includes(filterTerm));
-    setFilteredArray(filtered);
-  }
-
-
-  const navigateToDetail = (id) => {
-    navigate(`/ESG-Profile/${id}`);
+  const navigateToDetail = (symbol) => {
+    navigate(`/ESG-Profile/${symbol}`);
   };
 
   return (
@@ -94,11 +89,11 @@ export default function Search() {
       <div className='py-5'>
         <div className='text-lg font-semibold'>Filter</div>
         <div className='py-3 grid grid-cols-4 md:flex space-x-1 space-y-1 md:space-x-4 md:space-y-0'>
-          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => handleFilter(null)}>All Company</button>
-          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => handleFilter('SET50')}>SET 50</button>
-          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => handleFilter('SET100')}>SET 100</button>
-          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => handleFilter('THSI')}>THSI</button>
-          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => handleFilter('THSI INDEX')}>SET THSI INDEX</button>
+          <button className={`text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm ${activeFilter === null ? 'bg-red-700 text-white' : 'bg-white' }`} onClick={() => handleFilter(null)}>All Company</button>
+          <button className={`text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm ${activeFilter === 'SET50' ? 'bg-red-700 text-white' : 'bg-white' }`} onClick={() => handleFilter('SET50')}>SET 50</button>
+          <button className={`text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm ${activeFilter === 'SET100' ? 'bg-red-700 text-white' : 'bg-white' }`} onClick={() => handleFilter('SET100')}>SET 100</button>
+          <button className={`text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm ${activeFilter === 'THSI' ? 'bg-red-700 text-white' : 'bg-white' }`} onClick={() => handleFilter('THSI')}>THSI</button>
+          <button className={`text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm ${activeFilter === 'THSI INDEX' ? 'bg-red-700 text-white' : 'bg-white' }`} onClick={() => handleFilter('THSI INDEX')}>SET THSI INDEX</button>
         </div>
       </div>
       <div>
@@ -122,7 +117,7 @@ export default function Search() {
                 <React.Fragment key={index}>
                   <tr
                     className='bg-white border-b hover:bg-gray-200 cursor-pointer'
-                    onClick={() => { navigateToDetail(dataObj.id); }}
+                    onClick={() => { navigateToDetail(dataObj.symbol); }}
                   >
                     <th scope='row' className='px-2 md:px-6 py-4 text-[12px] font-bold text-gray-900 whitespace-nowrap'>
                       {dataObj.symbol}
@@ -144,7 +139,7 @@ export default function Search() {
                       {!dataObj.set50 && dataObj.set100 && <p>SET100</p>}
                       {!dataObj.set50 && !dataObj.set100 && <p>{dataObj.market}</p>}
                     </th>
-                    <PriceForTable symbol={dataObj.symbol} />
+                    <PriceForTable data={dataObj.stock_array} />
                   </tr>
                 </React.Fragment>
               ))
@@ -158,7 +153,7 @@ export default function Search() {
                   <React.Fragment key={index}>
                     <tr
                       className='bg-white border-b hover:bg-gray-200 cursor-pointer'
-                      onClick={() => { navigateToDetail(dataObj.id); }}
+                      onClick={() => { navigateToDetail(dataObj.symbol); }}
                     >
                       <th scope='row' className='px-2 md:px-6 py-4 text-[12px] font-bold text-gray-900 whitespace-nowrap'>
                         {dataObj.symbol}
@@ -180,7 +175,7 @@ export default function Search() {
                         {!dataObj.set50 && dataObj.set100 && <p>SET100</p>}
                         {!dataObj.set50 && !dataObj.set100 && <p>{dataObj.market}</p>}
                       </th>
-                      <PriceForTable symbol={dataObj.symbol} />
+                      <PriceForTable data={dataObj.stock_array} />
                     </tr>
                   </React.Fragment>
                 ))

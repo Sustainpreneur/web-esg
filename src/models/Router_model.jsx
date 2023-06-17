@@ -42,7 +42,7 @@ export const MASTER_ROUTER_MODEL = [
     id: "4",
     name: "ESG-Profile",
     title:"ESG-Profile",
-    router_path: "/ESG-Profile/:id",
+    router_path: "/ESG-Profile/:symbol",
     router_component: <ESGProfile />,
     items: [],
     is_active: true,

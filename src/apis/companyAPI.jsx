@@ -105,7 +105,7 @@ class companyAPI extends Component {
   //ข้อมูลบริษัททั้งหมด
   static getAllCompany = async () => {
     try {
-      const response = await axios.get("/esg/allcompany")
+      const response = await axios.get("/financial/all-stock")
       return response.data;
     } catch (error) {
       console.log(error);
@@ -147,6 +147,16 @@ class companyAPI extends Component {
       response.send(error);
     }
   };
+
+  static getStockBySector = async (sector) => {
+    try {
+      const response = await axios.get(`/financial/stock-by-sector/${sector}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      response.send(error);
+    }
+  }
 
 }
 export default companyAPI;

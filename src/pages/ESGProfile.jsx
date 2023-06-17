@@ -7,7 +7,7 @@ import axios from 'axios';
 import { SDGs } from '../component/SDGs';
 
 export default function ESGProfile() {
-  const { id } = useParams();
+  const { symbol } = useParams();
   const [item, setItem] = useState([]);
   const [esgScore, setEsgScore] = useState([]);
   const [esgScoreEnv, setEsgScoreEnv] = useState([]);
@@ -19,14 +19,15 @@ export default function ESGProfile() {
   const [item120Days, setItem120Days] = useState();
   const [itemOptionStock, setItemOptionStock] = useState();
   const [activeMenu, setActiveMenu] = useState(null);
-
   const getCompanyDataById = async () => {
     try {
-      const response = await axios.get(`http://13.213.120.182:8080/esg/companyById?id=${id}`)
-      setItem(response.data);
-      await getPrice(response.data.symbol);
-      await getOptionStock(response.data.symbol);
-      await getPrice120DaysAgo(response.data.symbol);
+
+      const response = await axios.get(`/financial/stock120DaysAgo/${symbol}`)
+      console.log(response.data[0])
+      setItem(response.data[0]);
+      await getPrice(response.data[0].stock_array);
+      await getOptionStock(response.data[0].symbol);
+      await getPrice120DaysAgo(response.data[0].stock_array);
     }
     catch (error) {
       console.log(error);
@@ -35,7 +36,7 @@ export default function ESGProfile() {
 
   const getEsgScoreById = async () => {
     try {
-      const response = await axios.get(`http://13.213.120.182:8080/esg-score/sdgByid/${item.symbol}`)
+      const response = await axios.get(`/esg-score/sdgByid/${item.symbol}`)
       // console.log(response.data[0].sdg_pic)
       setEsgScore(response.data);
     }
@@ -44,22 +45,21 @@ export default function ESGProfile() {
     }
   }
 
-  const getPrice = async (symbol) => {
+  const getPrice = async (stock_array) => {
     try {
-      const response = await axios.get(`http://13.213.120.182:8080/financial/stockToday/${symbol}.bk`);
-      setPriceToday(response.data[response.data.length - 1].adjClose);
-      setDiffPrice((response.data[response.data.length - 1].adjClose - response.data[response.data.length - 2].adjClose).toFixed(2));
-      setPercentage((((response.data[response.data.length - 1].adjClose - response.data[response.data.length - 2].adjClose) / response.data[response.data.length - 2].adjClose) * 100).toFixed(2));
+      setPriceToday(stock_array[stock_array.length - 1].adjClose);
+      setDiffPrice((stock_array[stock_array.length - 1].adjClose - stock_array[stock_array.length - 2].adjClose).toFixed(2));
+      setPercentage((((stock_array[stock_array.length - 1].adjClose - stock_array[stock_array.length - 2].adjClose) / stock_array[stock_array.length - 2].adjClose) * 100).toFixed(2));
     }
     catch (error) {
       console.log(error)
     }
   }
 
-  const getPrice120DaysAgo = async (symbol) => {
+  const getPrice120DaysAgo = async (stock_array) => {
     try {
-      const response = await axios.get(`http://13.213.120.182:8080/financial/stock120DaysAgo/${symbol}.bk`);
-      setItem120Days(response.data);
+      // const response = await axios.get(`/financial/stock120DaysAgo/${symbol}.bk`);
+      setItem120Days(stock_array);
     }
     catch (error) {
       console.log(error)
@@ -68,7 +68,7 @@ export default function ESGProfile() {
 
   const getOptionStock = async (symbol) => {
     try {
-      const response = await axios.get(`http://13.213.120.182:8080/financial/getOptionStock/${symbol}.bk`);
+      const response = await axios.get(`/financial/getOptionStock/${symbol}.bk`);
       console.log(response.data);
       setItemOptionStock(response.data);
     }
@@ -99,6 +99,20 @@ export default function ESGProfile() {
     }
   }
 
+  useEffect(() => {
+    getCompanyDataById();
+  }, []);
+
+  useEffect(() => {
+    getEsgScoreById();
+  }, [item]);
+
+  useEffect(() => {
+    if (esgScore) {
+      SplitESG();
+    }
+  }, [esgScore]);
+
   const renderDetails = () => {
     if (activeMenu === null) {
       return <div className='py-2 md:py-8'>
@@ -110,18 +124,33 @@ export default function ESGProfile() {
                 <div className='text-sm md:text-lg font-bold'>{item.symbol}</div>
                 <div className='text-sm md:text-base font-bold text-[#777777]'>{item.company_name_th}</div>
               </div>
-              <div className='pb-2'>
-                <div className='text-sm md:text-base font-base'>Market Cap</div>
-                <div className='text-sm md:text-base font-bold'>{itemOptionStock && itemOptionStock.marketCap.toLocaleString()}</div>
+              <div className='grid grid-rows-3 grid-flow-col gap-x-10'>
+                <div className='pb-2'>
+                  <div className='text-sm md:text-base font-base'>Market Cap</div>
+                  <div className='text-sm md:text-base font-bold'>{itemOptionStock && itemOptionStock.marketCap.toLocaleString()}</div>
+                </div>
+                <div className='pb-2'>
+                  <div className='text-sm md:text-base font-base'>Avg Vol (3 month)</div>
+                  <div className='text-sm md:text-base font-bold'>{itemOptionStock && itemOptionStock.averageDailyVolume3Month.toLocaleString()}</div>
+                </div>
+                <div className='pb-2'>
+                  <div className='text-sm md:text-base font-base'>Trailing P/E</div>
+                  <div className='text-sm md:text-base font-bold'>{itemOptionStock && itemOptionStock.trailingPE}</div>
+                </div>
+                <div className='pb-2'>
+                  <div className='text-sm md:text-base font-base'>Volume</div>
+                  <div className='text-sm md:text-base font-bold'>{itemOptionStock && itemOptionStock.regularMarketVolume}</div>
+                </div>
+                <div className='pb-2'>
+                  <div className='text-sm md:text-base font-base'>52W High</div>
+                  <div className='text-sm md:text-base font-bold'>{itemOptionStock && itemOptionStock.fiftyTwoWeekRange.high}</div>
+                </div>
+                <div className='pb-2'>
+                  <div className='text-sm md:text-base font-base'>52W Low</div>
+                  <div className='text-sm md:text-base font-bold'>{itemOptionStock && itemOptionStock.fiftyTwoWeekRange.low}</div>
+                </div>
               </div>
-              <div className='pb-2'>
-                <div className='text-sm md:text-base font-base'>Avg Vol (3 month)</div>
-                <div className='text-sm md:text-base font-bold'>{itemOptionStock && itemOptionStock.averageDailyVolume3Month.toLocaleString()}</div>
-              </div>
-              <div>
-                <div className='text-sm md:text-base font-base'>Trailing P/E</div>
-                <div className='text-sm md:text-base font-bold'>{itemOptionStock && itemOptionStock.trailingPE}</div>
-              </div>
+
             </div>
             <div className='pt-3'>
               <div className='flex md:justify-end space-x-1 md:space-x-3'>
@@ -233,7 +262,7 @@ export default function ESGProfile() {
             return (
               <div key={index} className='md:py-2'>
                 <div className='md:py-4'>
-                  <div className='px-4 md:px-6 pt-4 pb-2 md:py-4 text-sm md:text-base font-bold'>Text Source</div>
+                  <div className='px-4 md:px-6 pt-4 pb-2 md:py-4 text-sm md:text-base font-bold'>การดำเนินงานด้านสิ่งแวดล้อมที่ {index + 1}</div>
                   <hr />
                   <div className='px-4 md:px-6 py-2 md:py-4 text-sm md:text-base font-light text-[#333333] text-ellipsis overflow-hidden'>{dataObj.ESG_text}</div>
                   <div className='flex md:space-x-1 px-4 md:px-6 pt-2 md:pt-4'>
@@ -253,12 +282,12 @@ export default function ESGProfile() {
                     </thead>
                     <tbody>
                       <tr className='border-b dark:border-neutral-500'>
-                        <td className='whitespace-nowrap px-2 md:px-6 py-4 text-sm md:text-base'>Actual Textual</td>
+                        <td className='whitespace-nowrap px-2 md:px-6 py-4 text-sm md:text-base'>ผลการประเมินจากรายงาน การดำเนินการนี้อยู่ภายใต้นโยบาย:</td>
                         {/* <td className='text-center whitespace-nowrap px-6 py-4'>15.2%</td> */}
                         <td className='text-center whitespace-nowrap px-6 py-4 text-sm md:text-base'>{dataObj.ESG_labels_actual_textual}</td>
                       </tr>
                       <tr className='border-b dark:border-neutral-500'>
-                        <td className='whitespace-nowrap px-2 md:px-6 py-4 text-sm md:text-base'>Prediction Textual</td>
+                        <td className='whitespace-nowrap px-2 md:px-6 py-4 text-sm md:text-base'>ผลการประเมินจากระบบปัญญาประดิษฐ์ การดำเนินการนี้อยู่ภายใต้นโยบาย:</td>
                         {/* <td className='text-center whitespace-nowrap px-6 py-4'>14.5%</td> */}
                         <td className='text-center whitespace-nowrap px-6 py-4 text-sm md:text-base'>{dataObj.ESG_labels_pred_textual}</td>
                       </tr>
@@ -286,7 +315,7 @@ export default function ESGProfile() {
             return (
               <div key={index} className='md:py-2'>
                 <div className='md:py-4'>
-                  <div className='px-4 md:px-6 pt-4 pb-2 md:py-4 text-sm md:text-base font-bold'>Text Source</div>
+                  <div className='px-4 md:px-6 pt-4 pb-2 md:py-4 text-sm md:text-base font-bold'>การดำเนินงานด้านสังคมที่ {index + 1}</div>
                   <hr />
                   <div className='px-4 md:px-6 py-2 md:py-4 text-sm md:text-base font-light text-[#333333]'>{dataObj.ESG_text}</div>
                   <div className='flex md:space-x-1 px-4 md:px-6 md:pt-4'>
@@ -306,12 +335,12 @@ export default function ESGProfile() {
                     </thead>
                     <tbody>
                       <tr className='border-b dark:border-neutral-500'>
-                        <td className='whitespace-nowrap px-2 md:px-6 py-4 text-sm md:text-base'>Actual Textual</td>
+                        <td className='whitespace-nowrap px-2 md:px-6 py-4 text-sm md:text-base'>ผลการประเมินจากรายงาน การดำเนินการนี้อยู่ภายใต้นโยบาย:</td>
                         {/* <td className='text-center whitespace-nowrap px-6 py-4'>15.2%</td> */}
                         <td className='text-center whitespace-nowrap px-6 py-4 text-sm md:text-base'>{dataObj.ESG_labels_actual_textual}</td>
                       </tr>
                       <tr className='border-b dark:border-neutral-500'>
-                        <td className='whitespace-nowrap px-2 md:px-6 py-4 text-sm md:text-base'>Prediction Textual</td>
+                        <td className='whitespace-nowrap px-2 md:px-6 py-4 text-sm md:text-base'>ผลการประเมินจากระบบปัญญาประดิษฐ์ การดำเนินการนี้อยู่ภายใต้นโยบาย:</td>
                         {/* <td className='text-center whitespace-nowrap px-6 py-4'>14.5%</td> */}
                         <td className='text-center whitespace-nowrap px-6 py-4 text-sm md:text-base'>{dataObj.ESG_labels_pred_textual}</td>
                       </tr>
@@ -333,7 +362,7 @@ export default function ESGProfile() {
             return (
               <div key={index} className='md:py-2'>
                 <div className='md:py-4'>
-                  <div className='px-4 md:px-6 pt-4 pb-2 md:py-4 text-sm md:text-base font-bold'>Text Source</div>
+                  <div className='px-4 md:px-6 pt-4 pb-2 md:py-4 text-sm md:text-base font-bold'>การดำเนินงานด้านบรรษัทภิบาลที่ {index + 1}</div>
                   <hr />
                   <div className='px-4 md:px-6 py-2 md:py-4 text-sm md:text-base font-light text-[#333333]'>{dataObj.ESG_text}</div>
                   <div className='flex md:space-x-1 px-4 md:px-6 pt-2 md:pt-4'>
@@ -353,12 +382,12 @@ export default function ESGProfile() {
                     </thead>
                     <tbody>
                       <tr className='border-b dark:border-neutral-500'>
-                        <td className='whitespace-nowrap px-2 md:px-6 py-4 text-sm md:text-base'>Actual Textual</td>
+                        <td className='whitespace-nowrap px-2 md:px-6 py-4 text-sm md:text-base'>ผลการประเมินจากรายงาน การดำเนินการนี้อยู่ภายใต้นโยบาย:</td>
                         {/* <td className='text-center whitespace-nowrap px-6 py-4'>15.2%</td> */}
                         <td className='text-center whitespace-nowrap px-6 py-4 text-sm md:text-base'>{dataObj.ESG_labels_actual_textual}</td>
                       </tr>
                       <tr className='border-b dark:border-neutral-500'>
-                        <td className='whitespace-nowrap px-2 md:px-6 py-4 text-sm md:text-base'>Prediction Textual</td>
+                        <td className='whitespace-nowrap px-2 md:px-6 py-4 text-sm md:text-base'>ผลการประเมินจากระบบปัญญาประดิษฐ์ การดำเนินการนี้อยู่ภายใต้นโยบาย:</td>
                         {/* <td className='text-center whitespace-nowrap px-6 py-4'>14.5%</td> */}
                         <td className='text-center whitespace-nowrap px-6 py-4 text-sm md:text-base'>{dataObj.ESG_labels_pred_textual}</td>
                       </tr>
@@ -394,19 +423,7 @@ export default function ESGProfile() {
     }
   };
 
-  useEffect(() => {
-    getCompanyDataById();
-  }, []);
 
-  useEffect(() => {
-    getEsgScoreById();
-  }, [item]);
-
-  useEffect(() => {
-    if (esgScore) {
-      SplitESG();
-    }
-  }, [esgScore]);
 
   return (
     <div><Navbar_made />
@@ -417,57 +434,56 @@ export default function ESGProfile() {
             <div>{item.company_name_th}</div>
           </div>
           <div className='flex space-x-2'>
-            <div className='bg-[#DE0000] text-white px-3 text-sm md:text-base rounded-md'>Sector: {item.industry_group}</div>
+            <div className='bg-[#DE0000] text-white px-3 text-sm md:text-base rounded-md'>Sector: {item.sector}</div>
             <div className='bg-[#DE0000] text-white px-3 text-sm md:text-base rounded-md'>Industry Group: {item.industry_group}</div>
           </div>
           <div className='mt-2 flex space-x-2'>
-            <div className='bg-[#a2a2a2] text-white px-3 text-sm md:text-base rounded-md'>SET THSI</div>
-            <div className='bg-[#a2a2a2] text-white px-3 text-sm md:text-base rounded-md'>SET THSI INDEX</div>
-            <div className='bg-[#a2a2a2] text-white px-3 text-sm md:text-base rounded-md'>SET 50</div>
-            <div className='bg-[#a2a2a2] text-white px-3 text-sm md:text-base rounded-md'>SET 100</div>
+            {item.setthsi && <div className='bg-[#a2a2a2] text-white px-3 text-sm md:text-base rounded-md'>SET THSI</div>}
+            {item.setthsi_index && <div className='bg-[#a2a2a2] text-white px-3 text-sm md:text-base rounded-md'>SET THSI INDEX</div>}
+            {item.set50 && <div className='bg-[#a2a2a2] text-white px-3 text-sm md:text-base rounded-md'>SET50</div>}
+            {item.set100 && <div className='bg-[#a2a2a2] text-white px-3 text-sm md:text-base rounded-md'>SET100</div>}
           </div>
           <div className='pt-4 md:pt-6'>
             <div className='pb-2 text-sm md:text-base font-bold'>COMPANY DESCRIPTION</div>
-            <div className='px-1 md:pl-2 text-sm md:text-base font-light'>
-              บริษัท แอดวานซ์ อินโฟร์ เซอร์วิส จำกัด (มหาชน) (อังกฤษ: Advanced Info Service Public Company Limited) หรือเรียกโดยย่อว่า
-              เอไอเอส (อังกฤษ: AIS) เป็นบริษัทมหาชนด้านเทคโนโลยีสารสนเทศและการสื่อสารของไทย เป็นผู้ให้บริการเครือข่ายโทรศัพท์มือถือที่ใหญ่ที่สุดของประเทศตามจำนวนผู้ใช้งาน[4] มีสถานะเป็นบริษัทในเครือของอินทัช โฮลดิ้งส์ โดยใน ปี พ.ศ. 2563 เอไอเอสถือเป็นบริษัทที่มีมูลค่าหลักทรัพย์ตามราคาตลาดสูงเป็นอันดับสี่ในตลาดหลักทรัพย์แห่งประเทศไทย
+            <div className='px-1 md:px-0 md:pl-2 text-sm md:text-base font-light'>
+              {item.company_information_th}
             </div>
           </div>
           <div className='flex'>
             <div className='mt-4 space-y-2 w-[50%]'>
               <div className='flex space-x-1'>
                 <div className='font-bold'>Market:</div>
-                <div>SET</div>
+                <div>{item.market}</div>
               </div>
               <div className='flex space-x-1'>
                 <div className='font-bold'>CG SCORE:</div>
-                <div>5 star</div>
+                <div>{item.cg_score}</div>
               </div>
               <div className='flex space-x-1'>
                 <div className='font-bold'>AGM LEVEL:</div>
-                <div>5</div>
+                <div>{item.agm_leve}</div>
               </div>
               <div className='flex space-x-1'>
                 <div className='font-bold'>THAI CAC:</div>
-                <div>ได้รับการรับรอง</div>
+                <div>{item.thai_cac}</div>
               </div>
             </div>
             <div className='mt-4 space-y-2 w-[50%]'>
               <div className='flex space-x-1'>
                 <div className='font-bold'>Address:</div>
-                <div>SET</div>
+                <div>{item.location}</div>
               </div>
               <div className='flex space-x-1'>
-                <div className='font-bold'>Telephone:</div>
-                <div>0-2537-2000</div>
+                {/* <div className='font-bold'>Telephone:</div> */}
+                <div>{item.telephone}</div>
               </div>
               <div className='flex space-x-1'>
-                <div className='font-bold'>Fax</div>
-                <div>0-2665-2705</div>
+                {/* <div className='font-bold'>Fax</div> */}
+                <div>{item.fax}</div>
               </div>
               <div className='flex space-x-1'>
                 <div className='font-bold'>Website:</div>
-                <div className='text-[#033fb5] font-bold'>http://www.pttplc.com</div>
+                <div className='text-[#033fb5] font-bold'>{item.website}</div>
               </div>
             </div>
           </div>
@@ -487,7 +503,7 @@ export default function ESGProfile() {
         <p>Loading...</p>
       )}
 
-        <Footer />
+      {/* <Footer /> */}
     </div>
   )
 }

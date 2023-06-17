@@ -2,17 +2,17 @@ import { React, useState, useEffect, useCallback } from 'react';
 import { debounce } from 'lodash';
 import axios from 'axios';
 
-const Price = (symbol) => {
+const Price = (stock_array) => {
   const [priceToday, setPriceToday] = useState([]);
   const [diffPrice, setDiffPrice] = useState([]);
   const [percentage, setPercentage] = useState([]);
+  // console.log(stock_array.data.length - 1);
 
-  const getPrice = async () => {
+  const getPrice = async (stock_array) => {
     try {
-      const response = await axios.get(`http://13.213.120.182:8080/financial/stockToday/${symbol.symbol}.bk`)
-      setPriceToday(response.data[response.data.length - 1]);
-      setDiffPrice((response.data[response.data.length - 1].adjClose - response.data[response.data.length - 2].adjClose).toFixed(2));
-      setPercentage((((response.data[response.data.length - 1].adjClose - response.data[response.data.length - 2].adjClose)/response.data[response.data.length - 2].adjClose)*100).toFixed(2));
+      setPriceToday(stock_array.data[stock_array.data.length - 1]);
+      setDiffPrice((stock_array.data[stock_array.data.length - 1].adjClose - stock_array.data[stock_array.data.length - 2].adjClose).toFixed(2));
+      setPercentage((((stock_array.data[stock_array.data.length - 1].adjClose - stock_array.data[stock_array.data.length - 2].adjClose)/stock_array.data[stock_array.data.length - 2].adjClose)*100).toFixed(2));
     }
     catch (error) {
       console.log(error)
@@ -20,8 +20,8 @@ const Price = (symbol) => {
   };
 
   useEffect(() => {
-    getPrice();
-  }, [])
+    getPrice(stock_array);
+  }, [stock_array])
 
   return (
     <div className='flex space-x-2'>
