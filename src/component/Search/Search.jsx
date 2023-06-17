@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PriceForTable from '../Table/PriceForTable';
 import companyAPI from '../../apis/companyAPI';
 import { useNavigate } from 'react-router-dom';
+import { AiFillCheckCircle, AiFillMinusCircle } from 'react-icons/ai';
 
 export default function Search() {
   const [company, setCompany] = useState([]);
@@ -24,7 +25,7 @@ export default function Search() {
 
   const getAllCompany = async () => {
     try {
-      const response = await companyAPI.getAllCompany();
+      const response = await companyAPI.mockAllCompany();
       setCompany(response);
       setTotalPages(Math.ceil(response.length / itemsPerPage));
     }
@@ -40,12 +41,24 @@ export default function Search() {
   useEffect(() => {
     let filtered = company.filter(item => item.symbol.startsWith(searchTerm.toUpperCase()));
 
-    if (activeFilter !== null) {
-      filtered = company.filter(item => item.industry_group === activeFilter);
+    if (activeFilter === 'SET50') {
+      filtered = company.filter(item => item.set50 == true);
+    } else if (activeFilter === 'SET100') {
+      filtered = company.filter(item => item.set100 == true);
+    } else if (activeFilter === 'THSI') {
+      filtered = company.filter(item => item.setthsi == true);
+    } else if (activeFilter === 'THSI INDEX') {
+      filtered = company.filter(item => item.setthsi_index == true);
     }
 
     setFilteredArray(filtered);
+    setTotalPages(Math.ceil(filtered.length / itemsPerPage));
   }, [company, searchTerm, activeFilter]);
+
+  const handleFilter = (filter) => {
+    setActiveFilter(filter);
+    setCurrentPage(1);
+  }
 
   const handleSearch = () => {
     const filtered = company.filter(item => item.industry_group.toLowerCase().includes(filterTerm));
@@ -81,11 +94,11 @@ export default function Search() {
       <div className='py-5'>
         <div className='text-lg font-semibold'>Filter</div>
         <div className='py-3 grid grid-cols-4 md:flex space-x-1 space-y-1 md:space-x-4 md:space-y-0'>
-          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => setActiveFilter(null)}>All Company</button>
-          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => setActiveFilter('SET')}>SET 50</button>
-          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => setActiveFilter('Food and Beverage')}>SET 100</button>
-          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => setActiveFilter('Commerce')}>THSI</button>
-          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => setActiveFilter('Banking')}>SET THSI INDEX</button>
+          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => handleFilter(null)}>All Company</button>
+          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => handleFilter('SET50')}>SET 50</button>
+          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => handleFilter('SET100')}>SET 100</button>
+          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => handleFilter('THSI')}>THSI</button>
+          <button className='text-[12px] md:text-sm font-semibold md:px-5 md:py-2 rounded-lg border drop-shadow-sm' onClick={() => handleFilter('THSI INDEX')}>SET THSI INDEX</button>
         </div>
       </div>
       <div>
@@ -97,14 +110,51 @@ export default function Search() {
                 <th scope='col' className='px-2 md:px-6 py-3'>Symbol</th>
                 <th scope='col' className='px-2 md:px-6 py-3'>Name</th>
                 <th scope='col' className='px-2 md:px-6 py-3'>Sector</th>
-                <th scope='col' className='px-2 md:px-6 py-3'>Industry</th>
+                <th scope='col' className='px-2 md:px-6 py-3'>THSI</th>
+                <th scope='col' className='px-2 md:px-6 py-3'>THSI INDEX</th>
+                <th scope='col' className='px-2 md:px-6 py-3'>SET</th>
                 <th scope='col' className='px-6 py-3'>Price</th>
                 <th scope='col' className='px-6 py-3'>Change 1 day</th>
               </tr>
             </thead>
             <tbody>
-              {currentData && currentData.map((dataObj, index) => {
-                return (
+              {searchTerm !== '' || filteredArray.length > 0 ? (filteredArray.length > 0 ? ( filteredArray.map((dataObj, index) => (
+                <React.Fragment key={index}>
+                  <tr
+                    className='bg-white border-b hover:bg-gray-200 cursor-pointer'
+                    onClick={() => { navigateToDetail(dataObj.id); }}
+                  >
+                    <th scope='row' className='px-2 md:px-6 py-4 text-[12px] font-bold text-gray-900 whitespace-nowrap'>
+                      {dataObj.symbol}
+                    </th>
+                    <th scope='row' className='px-2 md:px-6 py-4 font-bold text-gray-900 whitespace-nowrap'>
+                      {dataObj.company_name_th}
+                    </th>
+                    <th scope='row' className='px-2 md:px-6 py-4 font-light text-gray-900 whitespace-nowrap'>
+                      {dataObj.sector ? dataObj.sector : "-"}
+                    </th>
+                    <th scope='row' className='px-2 md:px-6 py-4'>
+                      {dataObj.setthsi ? <AiFillCheckCircle className='text-blue-600' size={20} /> : <AiFillMinusCircle className='text-gray-400' size={20} />}
+                    </th>
+                    <th scope='row' className='px-2 md:px-6 py-4'>
+                      {dataObj.setthsi_index ? <AiFillCheckCircle className='text-blue-600' size={20} /> : <AiFillMinusCircle className='text-gray-400' size={20} />}
+                    </th>
+                    <th scope='row' className='px-2 md:px-6 py-4 font-light text-gray-900 whitespace-nowrap'>
+                      {dataObj.set50 && dataObj.set100 && <p>SET50</p>}
+                      {!dataObj.set50 && dataObj.set100 && <p>SET100</p>}
+                      {!dataObj.set50 && !dataObj.set100 && <p>{dataObj.market}</p>}
+                    </th>
+                    <PriceForTable symbol={dataObj.symbol} />
+                  </tr>
+                </React.Fragment>
+              ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center">No results found</td>
+                </tr>
+              )
+              ) :
+                currentData && currentData.map((dataObj, index) => (
                   <React.Fragment key={index}>
                     <tr
                       className='bg-white border-b hover:bg-gray-200 cursor-pointer'
@@ -117,16 +167,24 @@ export default function Search() {
                         {dataObj.company_name_th}
                       </th>
                       <th scope='row' className='px-2 md:px-6 py-4 font-light text-gray-900 whitespace-nowrap'>
-                        {dataObj.industry_group ? dataObj.industry_group : "-"}
+                        {dataObj.sector ? dataObj.sector : "-"}
+                      </th>
+                      <th scope='row' className='px-2 md:px-6 py-4'>
+                        {dataObj.setthsi ? <AiFillCheckCircle className='text-blue-600' size={20} /> : <AiFillMinusCircle className='text-gray-400' size={20} />}
+                      </th>
+                      <th scope='row' className='px-2 md:px-6 py-4'>
+                        {dataObj.setthsi_index ? <AiFillCheckCircle className='text-blue-600' size={20} /> : <AiFillMinusCircle className='text-gray-400' size={20} />}
                       </th>
                       <th scope='row' className='px-2 md:px-6 py-4 font-light text-gray-900 whitespace-nowrap'>
-                        {dataObj.set_mai_industry_group}
+                        {dataObj.set50 && dataObj.set100 && <p>SET50</p>}
+                        {!dataObj.set50 && dataObj.set100 && <p>SET100</p>}
+                        {!dataObj.set50 && !dataObj.set100 && <p>{dataObj.market}</p>}
                       </th>
                       <PriceForTable symbol={dataObj.symbol} />
                     </tr>
                   </React.Fragment>
-                )
-              })}
+                ))
+              }
             </tbody>
           </table>
           <div className="flex justify-center mt-4">
