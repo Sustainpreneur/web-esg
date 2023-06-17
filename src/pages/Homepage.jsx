@@ -1,19 +1,24 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Navbar_made from '../component/Navbar';
 import Search from '../component/Search/Search';
 import Footer from '../component/Footer';
+import newsAPI from '../apis/newsAPI';
 
 const Homepage = () => {
-  const newsData = [
-    {
-      name: 'India pauses plans to add new coal plants for five years, bets on renewables, batteries',
-      tag: 'WORLD',
-      type: 'ENVIRONMENT',
-      source: 'AP NEWS',
-      link: 'https://apnews.com/article/india-coal-pause-plan-climate-renewables-68b75402af663e4553434bc672fc9cda',
-      date: '01/06/2023'
-    },
-  ]
+  const [newsData, setNewsData] = useState();
+
+  const getThreeLatestNews = async () => {
+    try {
+      const response = await newsAPI.mockThreeLatestNews();
+      setNewsData(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getThreeLatestNews()
+  }, []);
 
   return (
     <>
@@ -35,69 +40,28 @@ const Homepage = () => {
             <h1 className='text-xl font-semibold'>Sustainable News</h1>
           </div>
           <div className='grid grid-cols-3 items-stretch place-items-center'>
-            <div className='border border-gray-200 rounded-lg shadow w-[400px]'>
-              <img className='rounded-t-lg' src="img/image-1.jpg" alt="" />
-              <div className='p-5'>
-                <div className='mb-2 flex justify-between items-center'>
-                  <div className='flex space-x-1 text-sm font-bold'>
-                    <div className='text-[#03B50A]'>
-                      {newsData[0].type} |
+            {newsData && newsData.map((dataObj, index) => {
+              return (
+                <div key={index} className='border border-gray-200 rounded-lg shadow w-[400px]'>
+                  <img className='rounded-t-lg' src={dataObj.image} alt="" />
+                  <div className='p-5'>
+                    <div className='mb-2 flex justify-between items-center'>
+                      <div className='flex space-x-1 text-sm font-bold'>
+                        <div className='text-[#03B50A]'>
+                          {dataObj.category}
+                        </div>
+                      </div>
+                      <div className='text-sm font-semibold'>
+                        {dataObj.time}
+                      </div>
                     </div>
-                    <div className='text-[#033FB5]'>
-                      {newsData[0].tag}
-                    </div>
-                  </div>
-                  <div className='text-sm font-semibold'>
-                    {newsData[0].date}
-                  </div>
-                </div>
-                <h5 className='mb-2 font-bold tracking-tight'>{newsData[0].name}</h5>
-                <p className='text-sm'>Source: {newsData[0].source}</p>
-                <p className='text-sm'>Link: {newsData[0].link}</p>
-              </div>
-            </div>
-            <div className='border border-gray-200 rounded-lg shadow w-[400px]'>
-              <img className='rounded-t-lg' src="img/image-1.jpg" alt="" />
-              <div className='p-5'>
-                <div className='mb-2 flex justify-between items-center'>
-                  <div className='flex space-x-1 text-sm font-bold'>
-                    <div className='text-[#03B50A]'>
-                      {newsData[0].type} |
-                    </div>
-                    <div className='text-[#033FB5]'>
-                      {newsData[0].tag}
-                    </div>
-                  </div>
-                  <div className='text-sm font-semibold'>
-                    {newsData[0].date}
+                    <h5 className='mb-2 font-bold tracking-tight'>{dataObj.title}</h5>
+                    {/* <p className='text-sm'>Source: {newsData[0].source}</p>
+                    <p className='text-sm'>Link: {newsData[0].link}</p> */}
                   </div>
                 </div>
-                <h5 className='mb-2 font-bold tracking-tight'>{newsData[0].name}</h5>
-                <p className='text-sm'>Source: {newsData[0].source}</p>
-                <p className='text-sm'>Link: {newsData[0].link}</p>
-              </div>
-            </div>
-            <div className='border border-gray-200 rounded-lg shadow w-[400px]'>
-              <img className='rounded-t-lg' src="img/image-1.jpg" alt="" />
-              <div className='p-5'>
-                <div className='mb-2 flex justify-between items-center'>
-                  <div className='flex space-x-1 text-sm font-bold'>
-                    <div className='text-[#03B50A]'>
-                      {newsData[0].type} |
-                    </div>
-                    <div className='text-[#033FB5]'>
-                      {newsData[0].tag}
-                    </div>
-                  </div>
-                  <div className='text-sm font-semibold'>
-                    {newsData[0].date}
-                  </div>
-                </div>
-                <h5 className='mb-2 font-bold tracking-tight'>{newsData[0].name}</h5>
-                <p className='text-sm'>Source: {newsData[0].source}</p>
-                <p className='text-sm'>Link: {newsData[0].link}</p>
-              </div>
-            </div>
+              )
+            })}
           </div>
         </div>
         <Search />
