@@ -7,6 +7,6 @@ const APP_SETTING = {
   },
 };
 
-const APP_CONFIG = APP_SETTING.DEV;
+const APP_CONFIG = APP_SETTING.PROD;
 
 export { APP_CONFIG };

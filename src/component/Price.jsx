@@ -1,15 +1,14 @@
 import { React, useState, useEffect, useCallback } from 'react';
-import { debounce } from 'lodash';
-import axios from 'axios';
 
 const Price = (stock_array) => {
   const [priceToday, setPriceToday] = useState([]);
   const [diffPrice, setDiffPrice] = useState([]);
   const [percentage, setPercentage] = useState([]);
-  // console.log(stock_array.data.length - 1);
+  // console.log(stock_array);
 
   const getPrice = async (stock_array) => {
     try {
+      console.log(stock_array.data[stock_array.data.length - 1].adjclose)
       setPriceToday(stock_array.data[stock_array.data.length - 1]);
       setDiffPrice((stock_array.data[stock_array.data.length - 1].adjClose - stock_array.data[stock_array.data.length - 2].adjClose).toFixed(2));
       setPercentage((((stock_array.data[stock_array.data.length - 1].adjClose - stock_array.data[stock_array.data.length - 2].adjClose)/stock_array.data[stock_array.data.length - 2].adjClose)*100).toFixed(2));
